@@ -1,0 +1,53 @@
+#built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# OSX files
+.DS_Store
+
+# Eclipse project files
+.classpath
+.project
+
+# Android Studio
+*.iml
+build/
+.idea
+.idea/compiler.xml
+.idea/misc.xml
+.idea/workspace.xml
+.idea/libraries/
+.externalNativeBuild
+
+# Gradle Files
+.gradle
+
+# Log Files
+*.log
+
+# project
+app/libs/aar/
+app/mapping/
+
+# freeline
+freeline/
+freeline_core/
+freeline.py
+# others
+temp.txt
+tmp.txt
+UserInterfaceState.xcuserstate
+dump.rdb
