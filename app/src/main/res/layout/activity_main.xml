@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.getnway.doubletextview.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
-</RelativeLayout>
+        android:text="文本"
+        android:textSize="14sp"/>
+
+    <com.getnway.doubletextview.DoubleTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:drawableLeft="@drawable/icon_user"
+        app:drawableLeftScale="0.4"
+        app:drawableLeftPadding="6dp"
+        app:drawableRight="@drawable/icon_arrow"
+        app:drawableRightScale="0.6"
+        app:drawableRightPadding="2dp"
+        app:textLeft="左边"
+        app:textLeftColor="#ff0000"
+        app:textLeftGravity="center_vertical"
+        app:textLeftPaddingLeft="4dp"
+        app:textLeftPaddingRight="4dp"
+        app:textLeftSize="14sp"
+        app:textRight="右边"
+        app:textRightColor="#00ff00"
+        app:textRightGravity="right"
+        app:textRightPaddingLeft="8dp"
+        app:textRightPaddingRight="8dp"
+        app:textRightSize="28sp"/>
+</LinearLayout>

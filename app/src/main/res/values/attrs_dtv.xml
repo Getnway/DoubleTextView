@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DoubleTextView">
+        <attr name="textLeft" format="string"/>
+        <attr name="textRight" format="string"/>
+        <attr name="textLeftColor" format="color"/>
+        <attr name="textRightColor" format="color"/>
+        <attr name="textLeftSize" format="dimension"/>
+        <attr name="textRightSize" format="dimension"/>
+        <attr name="textLeftPaddingLeft" format="dimension"/>
+        <attr name="textLeftPaddingRight" format="dimension"/>
+        <attr name="textRightPaddingLeft" format="dimension"/>
+        <attr name="textRightPaddingRight" format="dimension"/>
+        <attr name="textLeftGravity">
+            <enum name="top" value="48"/>
+            <enum name="center_vertical" value="16"/>
+            <enum name="bottom" value="80"/>
+        </attr>
+        <attr name="textRightGravity">
+            <enum name="left" value="3"/>
+            <enum name="center_horizontal" value="1"/>
+            <enum name="right" value="5"/>
+        </attr>
+        <attr name="drawableLeft" format="reference"/>
+        <attr name="drawableRight" format="reference"/>
+        <attr name="drawableLeftScale" format="float"/>
+        <attr name="drawableRightScale" format="float"/>
+        <attr name="drawableLeftPadding" format="dimension"/>
+        <attr name="drawableRightPadding" format="dimension"/>
+    </declare-styleable>
+</resources>
