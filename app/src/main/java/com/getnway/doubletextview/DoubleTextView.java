@@ -26,6 +26,7 @@ import android.widget.TextView;
 public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeListener {
     private static final int MAX_LEVEL = 10000; // ScaleDrawable#MAX_LEVEL
     private static final int DEFAULT_TEXT_SIZE = 15;
+    private static final String DEFAULT_HINT_COLOR = "#666666";
     private TextView textLeft, textRight;
     private Drawable leftDrawable, rightDrawable;
     private int leftDrawablePadding, rightDrawablePadding;
@@ -37,8 +38,11 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
 
     public DoubleTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        LinearLayout leftLinearLayout = new LinearLayout(getContext());
+        LinearLayout rightLinearLayout = new LinearLayout(getContext());
         textLeft = new TextView(getContext());
         textRight = new TextView(getContext());
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DoubleTextView);
         textLeft.setText(a.getText(R.styleable.DoubleTextView_textLeft));
         ColorStateList textLeftColor = a.getColorStateList(R.styleable.DoubleTextView_textLeftColor);
@@ -47,8 +51,8 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
                 a.getDimensionPixelSize(R.styleable.DoubleTextView_textLeftSize, DEFAULT_TEXT_SIZE));
         textLeft.setPadding(a.getDimensionPixelSize(R.styleable.DoubleTextView_textLeftPaddingLeft, 0), 0,
                 a.getDimensionPixelSize(R.styleable.DoubleTextView_textLeftPaddingRight, 0), 0);
-        textLeft.setGravity(a.getInt(R.styleable.DoubleTextView_textLeftGravity, Gravity.CENTER_VERTICAL));
-        textLeft.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        textLeft.setGravity(Gravity.CENTER_VERTICAL);
+        textLeft.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         leftDrawable = a.getDrawable(R.styleable.DoubleTextView_drawableLeft);
         leftDrawablePadding = a.getDimensionPixelSize(R.styleable.DoubleTextView_drawableLeftPadding, 0);
         leftDrawableScale = a.getFloat(R.styleable.DoubleTextView_drawableLeftScale, 1.0f);
@@ -61,13 +65,13 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         if (textRightColor != null) textRight.setTextColor(textRightColor);
         textRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 a.getDimensionPixelSize(R.styleable.DoubleTextView_textRightSize, DEFAULT_TEXT_SIZE));
-        int textRightGravity = a.getInt(R.styleable.DoubleTextView_textRightGravity, Gravity.RIGHT);
         textRight.setPadding(a.getDimensionPixelSize(R.styleable.DoubleTextView_textRightPaddingLeft, 0), 0,
                 a.getDimensionPixelSize(R.styleable.DoubleTextView_textRightPaddingRight, 0), 0);
+        int textRightGravity = a.getInt(R.styleable.DoubleTextView_textRightGravity, Gravity.RIGHT);
         textRight.setGravity(textRightGravity | Gravity.CENTER_VERTICAL);
-        textRight.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f));
+        textRight.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         textRight.setHint(a.getString(R.styleable.DoubleTextView_textRightHint));
-        textRight.setHintTextColor(a.getColor(R.styleable.DoubleTextView_textRightHintColor, Color.parseColor("#666666")));
+        textRight.setHintTextColor(a.getColor(R.styleable.DoubleTextView_textRightHintColor, Color.parseColor(DEFAULT_HINT_COLOR)));
         Drawable rightBg = a.getDrawable(R.styleable.DoubleTextView_textRightBackground);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             textRight.setBackground(rightBg);
@@ -81,11 +85,18 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         // If the text is changed, we need to re-register the Drawable to recompute the bounds given the new TextView height
         textRight.addOnLayoutChangeListener(this);
 
+        leftLinearLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        leftLinearLayout.setGravity(a.getInt(R.styleable.DoubleTextView_textLeftGravity, Gravity.CENTER_VERTICAL));
+        rightLinearLayout.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        rightLinearLayout.setGravity(Gravity.TOP);
         a.recycle();
+
         setOrientation(HORIZONTAL);
         setClickable(true);
-        addView(textLeft);
-        addView(textRight);
+        leftLinearLayout.addView(textLeft);
+        rightLinearLayout.addView(textRight);
+        addView(leftLinearLayout);
+        addView(rightLinearLayout);
     }
 
     public TextView getTextLeft() {
@@ -158,5 +169,13 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
             textLeft.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
         if (rightDrawable != null)
             textRight.setCompoundDrawablesWithIntrinsicBounds(null, null, rightDrawable, null);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (textLeft.getHeight() > textRight.getHeight()) {
+            textRight.setMinHeight(textLeft.getHeight());
+        }
     }
 }
