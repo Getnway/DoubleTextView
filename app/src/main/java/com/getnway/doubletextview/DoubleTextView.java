@@ -28,6 +28,8 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
     private static final int DEFAULT_TEXT_SIZE = 15;
     private TextView textLeft, textRight;
     private Drawable leftDrawable, rightDrawable;
+    private int leftDrawablePadding, rightDrawablePadding;
+    private float leftDrawableScale, rightDrawableScale;
 
     public DoubleTextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -51,6 +53,8 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         leftDrawablePadding = a.getDimensionPixelSize(R.styleable.DoubleTextView_drawableLeftPadding, 0);
         leftDrawableScale = a.getFloat(R.styleable.DoubleTextView_drawableLeftScale, 1.0f);
         setTextViewDrawable(textLeft, leftDrawable, leftDrawablePadding, leftDrawableScale);
+        // If the text is changed, we need to re-register the Drawable to recompute the bounds given the new TextView height
+        textLeft.addOnLayoutChangeListener(this);
 
         textRight.setText(a.getText(R.styleable.DoubleTextView_textRight));
         ColorStateList textRightColor = a.getColorStateList(R.styleable.DoubleTextView_textRightColor);
@@ -74,6 +78,8 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         rightDrawablePadding = a.getDimensionPixelSize(R.styleable.DoubleTextView_drawableRightPadding, 0);
         rightDrawableScale = a.getFloat(R.styleable.DoubleTextView_drawableRightScale, 1.0f);
         setTextViewDrawable(textRight, rightDrawable, rightDrawablePadding, rightDrawableScale);
+        // If the text is changed, we need to re-register the Drawable to recompute the bounds given the new TextView height
+        textRight.addOnLayoutChangeListener(this);
 
         a.recycle();
         setOrientation(HORIZONTAL);
@@ -90,8 +96,15 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         return textRight;
     }
 
-    private int leftDrawablePadding, rightDrawablePadding;
-    private float leftDrawableScale, rightDrawableScale;
+    public void setLeftDrawablePadding(int drawablePadding) {
+        this.leftDrawablePadding = drawablePadding;
+        setTextViewDrawable(textLeft, leftDrawable, leftDrawablePadding, leftDrawableScale);
+    }
+
+    public void setRightDrawablePadding(int drawablePadding) {
+        this.rightDrawablePadding = drawablePadding;
+        setTextViewDrawable(textRight, leftDrawable, leftDrawablePadding, leftDrawableScale);
+    }
 
     public void setLeftDrawableScale(float drawableScale) {
         this.leftDrawableScale = drawableScale;
@@ -100,7 +113,7 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
 
     public void setRightDrawableScale(float drawableScale) {
         this.rightDrawableScale = drawableScale;
-        setTextViewDrawable(textLeft, leftDrawable, leftDrawablePadding, leftDrawableScale);
+        setTextViewDrawable(textRight, leftDrawable, leftDrawablePadding, leftDrawableScale);
     }
 
     public void setTextLeftDrawable(Drawable drawable) {
@@ -113,10 +126,10 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
         setTextViewDrawable(textRight, rightDrawable, rightDrawablePadding, rightDrawableScale);
     }
 
-    private void setTextViewDrawable(TextView textView, Drawable drawable, int drawablePadding, final float drawableScale) {
+    private void setTextViewDrawable(final TextView textView, Drawable drawable, int drawablePadding, final float drawableScale) {
         textView.setCompoundDrawablePadding(drawablePadding);
         if (drawableScale != 1.0f && drawableScale > 0) {
-            ScaleDrawable rightScaleDrawable = new ScaleDrawable(drawable, Gravity.CENTER, 1.0f, 1.0f) {
+            ScaleDrawable scaleDrawable = new ScaleDrawable(drawable, Gravity.CENTER, 1.0f, 1.0f) {
                 @Override
                 public int getIntrinsicHeight() {
                     return (int) (super.getIntrinsicHeight() * drawableScale);
@@ -127,12 +140,16 @@ public class DoubleTextView extends LinearLayout implements View.OnLayoutChangeL
                     return (int) (super.getIntrinsicWidth() * drawableScale);
                 }
             };
-            rightScaleDrawable.setLevel((int) (drawableScale * MAX_LEVEL));
-            drawable = rightScaleDrawable;
+            scaleDrawable.setLevel((int) (drawableScale * MAX_LEVEL));
+            drawable = scaleDrawable;
         }
-        // If the text is changed, we need to re-register the Drawable to recompute the bounds given the new TextView height
-        textView.addOnLayoutChangeListener(this);
-        textView.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null);
+        if (textView == textLeft) {
+            leftDrawable = drawable;
+            textLeft.setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null);
+        } else if (textView == textRight) {
+            rightDrawable = drawable;
+            textRight.setCompoundDrawablesWithIntrinsicBounds(null, null, rightDrawable, null);
+        }
     }
 
     @Override
