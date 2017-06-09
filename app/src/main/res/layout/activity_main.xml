@@ -16,24 +16,28 @@
         android:textSize="14sp"/>
 
     <com.getnway.doubletextview.DoubleTextView
+        android:id="@+id/dtv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/selector_gray_white"
         app:drawableLeft="@drawable/icon_user"
-        app:drawableLeftScale="0.4"
         app:drawableLeftPadding="6dp"
+        app:drawableLeftScale="0.5"
         app:drawableRight="@drawable/icon_arrow"
-        app:drawableRightScale="0.6"
         app:drawableRightPadding="2dp"
-        app:textLeft="左边"
-        app:textLeftColor="#ff0000"
+        app:drawableRightScale="0.7"
+        app:textLeft="收货地址"
+        app:textLeftColor="#000000"
         app:textLeftGravity="center_vertical"
         app:textLeftPaddingLeft="4dp"
         app:textLeftPaddingRight="4dp"
         app:textLeftSize="14sp"
-        app:textRight="右边"
-        app:textRightColor="#00ff00"
+        app:textRightBackground="@drawable/selector_green_white"
+        app:textRightColor="#333333"
         app:textRightGravity="right"
+        app:textRightHint="可不填写"
+        app:textRightHintColor="#999999"
         app:textRightPaddingLeft="8dp"
         app:textRightPaddingRight="8dp"
-        app:textRightSize="28sp"/>
+        app:textRightSize="16sp"/>
 </LinearLayout>
